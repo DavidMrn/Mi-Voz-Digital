@@ -79,7 +79,9 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/reportes', async (req, res) => {
   try {
-    const reportes = await Reporte.find({}).lean();
+    const includeArchived = req.query.includeArchived === 'true';
+    const filter = includeArchived ? {} : { archivado: { $ne: true } };
+    const reportes = await Reporte.find(filter).lean();
     res.json(reportes.map(r => (r.id ? r : { ...r, id: r._id.toString() })));
   } catch (error) {
     console.error('Error obtener reportes:', error);
@@ -96,7 +98,14 @@ app.get('/api/reportes/:id', async (req, res) => {
       query.$or = [{ _id: q }];
     }
     const reporte = await Reporte.findOne(query).lean();
-    if (reporte) return res.json(reporte);
+    if (reporte) {
+      const includeArchived = req.query.includeArchived === 'true';
+      if (reporte.archivado && !includeArchived) {
+        // Hide archived items unless explicitly requested
+        return res.status(404).json({ error: 'Reporte no encontrado' });
+      }
+      return res.json(reporte);
+    }
     res.status(404).json({ error: 'Reporte no encontrado' });
   } catch (error) {
     console.error('Error obtener reporte:', error);
@@ -226,7 +235,9 @@ app.put('/api/reportes/:id/archive', async (req, res) => {
 
 app.get('/api/propuestas', async (req, res) => {
   try {
-    const propuestas = await Propuesta.find({}).lean();
+    const includeArchived = req.query.includeArchived === 'true';
+    const filter = includeArchived ? {} : { archivado: { $ne: true } };
+    const propuestas = await Propuesta.find(filter).lean();
     res.json(propuestas.map(p => (p.id ? p : { ...p, id: p._id.toString() })));
   } catch (error) {
     console.error('Error obtener propuestas:', error);
@@ -243,7 +254,13 @@ app.get('/api/propuestas/:id', async (req, res) => {
       query.$or = [{ _id: q }];
     }
     const propuesta = await Propuesta.findOne(query).lean();
-    if (propuesta) return res.json(propuesta);
+    if (propuesta) {
+      const includeArchived = req.query.includeArchived === 'true';
+      if (propuesta.archivado && !includeArchived) {
+        return res.status(404).json({ error: 'Propuesta no encontrada' });
+      }
+      return res.json(propuesta);
+    }
     res.status(404).json({ error: 'Propuesta no encontrada' });
   } catch (error) {
     console.error('Error obtener propuesta:', error);

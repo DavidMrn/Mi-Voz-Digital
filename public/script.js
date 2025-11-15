@@ -429,19 +429,33 @@ async function loadLeaderPanel() {
         const propuestas = await propuestasRes.json();
         
         const allItems = [...reportes, ...propuestas];
-        // Crear/actualizar botón para mostrar archivadas en panel de líder
+        // Crear/actualizar toggle (switch) para mostrar archivadas en panel de líder
         const leaderContainer = document.querySelector('#lider-dashboard .container');
         if (leaderContainer) {
-            let btn = document.getElementById('btn-toggle-archivadas');
-            if (!btn) {
-                btn = document.createElement('button');
-                btn.id = 'btn-toggle-archivadas';
-                btn.className = 'btn-secondary';
-                btn.style.marginBottom = '10px';
-                btn.addEventListener('click', toggleShowArchived);
-                leaderContainer.prepend(btn);
+            let toggle = document.getElementById('archivadas-toggle');
+            if (!toggle) {
+                toggle = document.createElement('div');
+                toggle.id = 'archivadas-toggle';
+                toggle.style.marginBottom = '10px';
+                toggle.innerHTML = `
+                    <label class="toggle-label">Mostrar archivadas
+                        <span class="switch">
+                            <input type="checkbox" id="toggle-archivadas-switch">
+                            <span class="slider"></span>
+                        </span>
+                    </label>
+                `;
+                leaderContainer.prepend(toggle);
+
+                // attach listener
+                document.getElementById('toggle-archivadas-switch').addEventListener('change', (e) => {
+                    leaderShowArchived = e.target.checked;
+                    loadLeaderPanel();
+                });
             }
-            btn.textContent = leaderShowArchived ? 'Ocultar archivadas' : 'Mostrar archivadas';
+            // set checkbox state
+            const checkbox = document.getElementById('toggle-archivadas-switch');
+            if (checkbox) checkbox.checked = !!leaderShowArchived;
         }
 
         // Actualizar estadísticas (sin filtros)
