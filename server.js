@@ -1,5 +1,9 @@
 require('dotenv').config();
 
+console.log('🚀 Iniciando servidor Mi Voz Digital...');
+console.log('📌 Ambiente:', process.env.NODE_ENV || 'development');
+console.log('🔗 MongoDB URI:', process.env.MONGO_URI ? 'Configurado' : 'NO configurado');
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
