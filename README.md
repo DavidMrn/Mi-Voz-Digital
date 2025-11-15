@@ -3,9 +3,6 @@
 
 # **Enlace a Aplicación Web:** https://mi-voz-digital.onrender.com/
 
-Documentación por: [David Morón](https://github.com/Jawuj)
-[[15-11-2025]] 01:00 - 02:35
-
 # Imagenes
 
 <table border="0">
@@ -233,3 +230,11 @@ Gracias.
 
 
 — David.
+
+
+---
+
+
+
+Documentación por: [David Morón](https://github.com/Jawuj)
+[[15-11-2025]] 01:00 - 02:35
