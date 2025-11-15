@@ -40,20 +40,20 @@ A su vez como el nombre de la persona que lo sugirió o comentó.
 ## Estructura del Código.
 
 Mi-Voz-Digital/
-│
-├── public/                    # Frontend (lo que ve el usuario)
-│   ├── index.html            # Una sola página con todas las pantallas
-│   ├── script.js             # Lógica JavaScript (login, votar, crear, etc)
-│   └── styles.css            # Estilos CSS (colores, posiciones)
-│
-├── models/                    # Definiciones de datos (MongoDB)
-│   ├── User.js               # Estructura: nombre, usuario, contraseña
-│   ├── Reporte.js            # Estructura: título, descripción, votos, estado
-│   └── Propuesta.js          # Similar a Reporte
-│
-├── server.js                 # Servidor Express (todas las rutas API)
-├── db.js                     # Conexión a MongoDB Atlas
-├── package.json              # Lista de librerías necesarias
-├── .env                      # Variables secretas (MONGO_URI, PORT)
-├── render.yaml               # Configuración para Render
-└── README.md                 # Documentacion
+
+    public/                    # Frontend (lo que ve el usuario)
+        index.html            # Una sola página con todas las pantallas
+        script.js             # Lógica JavaScript (login, votar, crear, etc)
+        styles.css            # Estilos CSS (colores, posiciones)
+
+    models/                    # Definiciones de datos (MongoDB)
+        User.js               # Estructura: nombre, usuario, contraseña
+        Reporte.js            # Estructura: título, descripción, votos, estado
+        Propuesta.js          # Similar a Reporte
+
+server.js                 # Servidor Express (todas las rutas API)
+db.js                     # Conexión a MongoDB Atlas
+package.json              # Lista de librerías necesarias
+.env                      # Variables secretas (MONGO_URI, PORT)
+render.yaml               # Configuración para Render
+README.md                 # Documentacion
