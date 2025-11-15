@@ -51,9 +51,9 @@ Mi-Voz-Digital/
         Reporte.js            # Estructura: título, descripción, votos, estado
         Propuesta.js          # Similar a Reporte
 
-server.js                 # Servidor Express (todas las rutas API)
-db.js                     # Conexión a MongoDB Atlas
-package.json              # Lista de librerías necesarias
-.env                      # Variables secretas (MONGO_URI, PORT)
-render.yaml               # Configuración para Render
-README.md                 # Documentacion
+    server.js                 # Servidor Express (todas las rutas API)
+    db.js                     # Conexión a MongoDB Atlas
+    package.json              # Lista de librerías necesarias
+    .env                      # Variables secretas (MONGO_URI, PORT)
+    render.yaml               # Configuración para Render
+    README.md                 # Documentacion
