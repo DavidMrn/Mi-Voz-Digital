@@ -1,5 +1,7 @@
-// API Base URL
-const API_URL = 'http://localhost:3000/api';
+// API Base URL - Funciona en local (localhost:3000) y en Render (dominio.onrender.com)
+const API_URL = window.location.origin === 'http://localhost:3000' || window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000/api'
+    : `${window.location.origin}/api`;
 
 // Estado global
 let currentUser = null;

@@ -20,7 +20,12 @@ const Propuesta = require('./models/Propuesta');
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permite todas las URLs (importante para celulares y dominios diferentes)
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 

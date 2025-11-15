@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: mi-voz-digital
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGO_URI
+        scope: build
+      - key: PORT
+        value: 3000
