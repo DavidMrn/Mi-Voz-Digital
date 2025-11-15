@@ -2,12 +2,22 @@
 **Del 14 de noviembre de 2025 a 15 noviembre de 2025.**
 
 Documentación por: [David Morón](https://github.com/Jawuj)
-[[15-11-2025]] 01:00 - 
+[[15-11-2025]] 01:00 - 02:35
 
 # Imagenes
 
-- 
-
+<table border="0">
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/paginaprincipal.png" width="300"/></td>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/iniciosesionciudadano.png" width="300"/></td>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/panelciudadano.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/reportarproblema.png" width="300"/></td>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/proponeridea.png" width="300"/></td>
+    <td><img src="https://raw.githubusercontent.com/DavidMrn/Mi-Voz-Digital/refs/heads/main/images/panellideradmin.png" width="300"/></td>
+  </tr>
+</table>
 
   
 ## Descripción.
