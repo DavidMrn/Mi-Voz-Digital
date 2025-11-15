@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Voz Digital - Gobernanza Local Medellín</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- Pantalla de Login Principal -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="logo">
+                <h1>🏛️ Mi Voz Digital</h1>
+                <p>Plataforma de Gobernanza Local - Medellín</p>
+            </div>
+            
+            <div class="login-options">
+                <div class="login-card" onclick="showLoginType('ciudadano')">
+                    <div class="icon">👥</div>
+                    <h2>Ciudadano</h2>
+                    <p>Reportar problemas y proponer mejoras</p>
+                    <button class="btn btn-primary">Ingresar como Ciudadano</button>
+                </div>
+                
+                <div class="login-card" onclick="showLoginType('lider')">
+                    <div class="icon">⭐</div>
+                    <h2>Líder Local</h2>
+                    <p>Gestionar reportes y propuestas</p>
+                    <button class="btn btn-secondary">Ingresar como Líder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Login/Registro Ciudadano -->
+    <div id="ciudadano-login-screen" class="screen">
+        <div class="login-container">
+            <div class="logo">
+                <h1>🏛️ Mi Voz Digital</h1>
+                <p>Portal de Ciudadanos</p>
+            </div>
+
+            <div class="auth-container">
+                <!-- Formulario de Inicio de Sesión -->
+                <div id="login-form-container" class="auth-form active">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="form-login-ciudadano">
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="login-usuario" required placeholder="Tu nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="login-password" required placeholder="Tu contraseña">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                    </form>
+                    <p class="toggle-text">¿No tienes cuenta? <a href="#" onclick="toggleAuthForm()">Regístrate aquí</a></p>
+                    <button class="btn btn-secondary btn-block" onclick="backToMainLogin()">← Atrás</button>
+                </div>
+
+                <!-- Formulario de Registro -->
+                <div id="register-form-container" class="auth-form">
+                    <h2>Crear Cuenta</h2>
+                    <form id="form-register-ciudadano">
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="register-nombre" required placeholder="Tu nombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="register-usuario" required placeholder="Elige un nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="register-password" required placeholder="Mínimo 6 caracteres">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Contraseña</label>
+                            <input type="password" id="register-password-confirm" required placeholder="Confirma tu contraseña">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
+                    </form>
+                    <p class="toggle-text">¿Ya tienes cuenta? <a href="#" onclick="toggleAuthForm()">Inicia sesión aquí</a></p>
+                    <button class="btn btn-secondary btn-block" onclick="backToMainLogin()">← Atrás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Login Líder -->
+    <div id="lider-login-screen" class="screen">
+        <div class="login-container">
+            <div class="logo">
+                <h1>🏛️ Mi Voz Digital</h1>
+                <p>Panel de Administrador</p>
+            </div>
+
+            <div class="auth-container">
+                <h2>Acceso de Líder Local</h2>
+                <form id="form-login-lider" class="auth-form active">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="lider-usuario" required placeholder="Usuario administrador">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="lider-password" required placeholder="Contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block">Ingresar como Líder</button>
+                </form>
+                <button class="btn btn-primary btn-block" onclick="backToMainLogin()">← Atrás</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Ciudadano -->
+    <div id="ciudadano-dashboard" class="screen">
+        <nav class="navbar">
+            <div class="nav-brand">🏛️ Mi Voz Digital</div>
+            <div class="nav-user">
+                <span id="user-name">Ciudadano</span>
+                <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('panel')">📊 Panel</button>
+                <button class="tab" onclick="showTab('reportar')">📍 Reportar Problema</button>
+                <button class="tab" onclick="showTab('proponer')">💡 Proponer Idea</button>
+            </div>
+
+            <!-- Tab Panel -->
+            <div id="tab-panel" class="tab-content active">
+                <h2>📊 Panel de Reportes y Propuestas</h2>
+                
+                <div class="filter-section">
+                    <button class="filter-btn active" onclick="filterItems('all')">Todos</button>
+                    <button class="filter-btn" onclick="filterItems('recent')">Recientes</button>
+                    <button class="filter-btn" onclick="filterItems('popular')">Más Votados</button>
+                </div>
+
+                <div id="items-list" class="items-grid"></div>
+            </div>
+
+            <!-- Tab Reportar -->
+            <div id="tab-reportar" class="tab-content">
+                <h2>📍 Reportar un Problema</h2>
+                <form id="form-reporte" class="form-card">
+                    <div class="form-group">
+                        <label>Título del Problema</label>
+                        <input type="text" id="reporte-titulo" required placeholder="Ej: Bache en la calle 45">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea id="reporte-descripcion" required placeholder="Describe el problema en detalle..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comuna</label>
+                        <select id="reporte-comuna" required>
+                            <option value="">Selecciona una comuna</option>
+                            <option value="1">Comuna 1 - Popular</option>
+                            <option value="2">Comuna 2 - Santa Cruz</option>
+                            <option value="3">Comuna 3 - Manrique</option>
+                            <option value="4">Comuna 4 - Aranjuez</option>
+                            <option value="5">Comuna 5 - Castilla</option>
+                            <option value="6">Comuna 6 - Doce de Octubre</option>
+                            <option value="7">Comuna 7 - Robledo</option>
+                            <option value="8">Comuna 8 - Villa Hermosa</option>
+                            <option value="9">Comuna 9 - Buenos Aires</option>
+                            <option value="10">Comuna 10 - La Candelaria</option>
+                            <option value="11">Comuna 11 - Laureles-Estadio</option>
+                            <option value="12">Comuna 12 - La América</option>
+                            <option value="13">Comuna 13 - San Javier</option>
+                            <option value="14">Comuna 14 - El Poblado</option>
+                            <option value="15">Comuna 15 - Guayabal</option>
+                            <option value="16">Comuna 16 - Belén</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ubicación (Latitud, Longitud)</label>
+                        <div class="location-input">
+                            <input type="text" id="reporte-lat" placeholder="Latitud" value="6.2442">
+                            <input type="text" id="reporte-lng" placeholder="Longitud" value="-75.5812">
+                            <button type="button" onclick="getLocation()" class="btn-location">📍 Usar mi ubicación</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto del Problema</label>
+                        <input type="file" id="reporte-foto" accept="image/*" capture="environment">
+                        <div id="reporte-preview" class="image-preview"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Enviar Reporte</button>
+                </form>
+            </div>
+
+            <!-- Tab Proponer -->
+            <div id="tab-proponer" class="tab-content">
+                <h2>💡 Proponer Proyecto Comunitario</h2>
+                <form id="form-propuesta" class="form-card">
+                    <div class="form-group">
+                        <label>Título de la Propuesta</label>
+                        <input type="text" id="propuesta-titulo" required placeholder="Ej: Parque infantil en el barrio">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción de la Idea</label>
+                        <textarea id="propuesta-descripcion" required placeholder="Describe tu propuesta y su beneficio para la comunidad..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comuna</label>
+                        <select id="propuesta-comuna" required>
+                            <option value="">Selecciona una comuna</option>
+                            <option value="1">Comuna 1 - Popular</option>
+                            <option value="2">Comuna 2 - Santa Cruz</option>
+                            <option value="3">Comuna 3 - Manrique</option>
+                            <option value="4">Comuna 4 - Aranjuez</option>
+                            <option value="5">Comuna 5 - Castilla</option>
+                            <option value="6">Comuna 6 - Doce de Octubre</option>
+                            <option value="7">Comuna 7 - Robledo</option>
+                            <option value="8">Comuna 8 - Villa Hermosa</option>
+                            <option value="9">Comuna 9 - Buenos Aires</option>
+                            <option value="10">Comuna 10 - La Candelaria</option>
+                            <option value="11">Comuna 11 - Laureles-Estadio</option>
+                            <option value="12">Comuna 12 - La América</option>
+                            <option value="13">Comuna 13 - San Javier</option>
+                            <option value="14">Comuna 14 - El Poblado</option>
+                            <option value="15">Comuna 15 - Guayabal</option>
+                            <option value="16">Comuna 16 - Belén</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="propuesta-categoria" required>
+                            <option value="">Selecciona una categoría</option>
+                            <option value="infraestructura">Infraestructura</option>
+                            <option value="medio-ambiente">Medio Ambiente</option>
+                            <option value="seguridad">Seguridad</option>
+                            <option value="cultura">Cultura y Recreación</option>
+                            <option value="educacion">Educación</option>
+                            <option value="salud">Salud</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Publicar Propuesta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Líder -->
+    <div id="lider-dashboard" class="screen">
+        <nav class="navbar navbar-leader">
+            <div class="nav-brand">⭐ Mi Voz Digital - Panel de Líder</div>
+            <div class="nav-user">
+                <span id="leader-name">Líder Local</span>
+                <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Filtros para Líder -->
+            <div class="leader-filters">
+                <div class="filter-group">
+                    <label>Filtrar por Comuna:</label>
+                    <select id="filter-comuna-leader" onchange="applyLeaderFilters()">
+                        <option value="">Todas las comunas</option>
+                        <option value="1">Comuna 1 - Popular</option>
+                        <option value="2">Comuna 2 - Santa Cruz</option>
+                        <option value="3">Comuna 3 - Manrique</option>
+                        <option value="4">Comuna 4 - Aranjuez</option>
+                        <option value="5">Comuna 5 - Castilla</option>
+                        <option value="6">Comuna 6 - Doce de Octubre</option>
+                        <option value="7">Comuna 7 - Robledo</option>
+                        <option value="8">Comuna 8 - Villa Hermosa</option>
+                        <option value="9">Comuna 9 - Buenos Aires</option>
+                        <option value="10">Comuna 10 - La Candelaria</option>
+                        <option value="11">Comuna 11 - Laureles-Estadio</option>
+                        <option value="12">Comuna 12 - La América</option>
+                        <option value="13">Comuna 13 - San Javier</option>
+                        <option value="14">Comuna 14 - El Poblado</option>
+                        <option value="15">Comuna 15 - Guayabal</option>
+                        <option value="16">Comuna 16 - Belén</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Filtrar por Categoría:</label>
+                    <select id="filter-categoria-leader" onchange="applyLeaderFilters()">
+                        <option value="">Todas las categorías</option>
+                        <option value="infraestructura">Infraestructura</option>
+                        <option value="medio-ambiente">Medio Ambiente</option>
+                        <option value="seguridad">Seguridad</option>
+                        <option value="cultura">Cultura y Recreación</option>
+                        <option value="educacion">Educación</option>
+                        <option value="salud">Salud</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Filtrar por Tipo:</label>
+                    <select id="filter-tipo-leader" onchange="applyLeaderFilters()">
+                        <option value="">Todos los tipos</option>
+                        <option value="reporte">Reportes</option>
+                        <option value="propuesta">Propuestas</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Filtrar por Estado:</label>
+                    <select id="filter-estado-leader" onchange="applyLeaderFilters()">
+                        <option value="">Todos los estados</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en-proceso">En Proceso</option>
+                        <option value="resuelto">Resuelto</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-secondary" onclick="resetLeaderFilters()">🔄 Limpiar Filtros</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-info">
+                        <h3 id="stat-reportes">0</h3>
+                        <p>Reportes Totales</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💡</div>
+                    <div class="stat-info">
+                        <h3 id="stat-propuestas">0</h3>
+                        <p>Propuestas Activas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <h3 id="stat-pendientes">0</h3>
+                        <p>Pendientes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="stat-resueltos">0</h3>
+                        <p>Resueltos</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>🔧 Gestión de Reportes y Propuestas</h2>
+            <div id="leader-items-list" class="items-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
