@@ -169,6 +169,59 @@ app.put('/api/reportes/:id/estado', async (req, res) => {
   }
 });
 
+// Editar reporte (campos permitidos)
+app.put('/api/reportes/:id', async (req, res) => {
+  try {
+    const q = req.params.id;
+    const query = { id: q };
+    if (isValidObjectId(q)) {
+      query.$or = [{ _id: q }];
+    }
+    const reporte = await Reporte.findOne(query);
+    if (!reporte) return res.status(404).json({ error: 'Reporte no encontrado' });
+
+    // Campos permitidos a actualizar
+    const allowed = ['titulo', 'descripcion', 'comuna', 'categoria', 'tipo', 'imagen', 'ubicacion'];
+    allowed.forEach(field => {
+      if (req.body[field] !== undefined) reporte[field] = req.body[field];
+    });
+
+    reporte.fechaActualizacion = new Date();
+    await reporte.save();
+    res.json(reporte.toObject());
+  } catch (error) {
+    console.error('Error editar reporte:', error);
+    res.status(500).json({ error: 'Error al editar reporte' });
+  }
+});
+
+// Archivar / Desarchivar reporte
+app.put('/api/reportes/:id/archive', async (req, res) => {
+  try {
+    const q = req.params.id;
+    const query = { id: q };
+    if (isValidObjectId(q)) {
+      query.$or = [{ _id: q }];
+    }
+    const reporte = await Reporte.findOne(query);
+    if (!reporte) return res.status(404).json({ error: 'Reporte no encontrado' });
+
+    // Esperamos { archivado: true/false }
+    if (typeof req.body.archivado === 'boolean') {
+      reporte.archivado = req.body.archivado;
+    } else {
+      return res.status(400).json({ error: 'Campo archivado inválido' });
+    }
+
+    reporte.fechaActualizacion = new Date();
+    await reporte.save();
+    res.json(reporte.toObject());
+  } catch (error) {
+    console.error('Error archivar reporte:', error);
+    res.status(500).json({ error: 'Error al archivar reporte' });
+  }
+});
+
 // ============= RUTAS DE PROPUESTAS =============
 
 app.get('/api/propuestas', async (req, res) => {
@@ -260,6 +313,58 @@ app.put('/api/propuestas/:id/estado', async (req, res) => {
   } catch (error) {
     console.error('Error actualizar estado propuesta:', error);
     res.status(500).json({ error: 'Error al cambiar estado' });
+  }
+});
+
+// Editar propuesta (campos permitidos)
+app.put('/api/propuestas/:id', async (req, res) => {
+  try {
+    const q = req.params.id;
+    const query = { id: q };
+    if (isValidObjectId(q)) {
+      query.$or = [{ _id: q }];
+    }
+    const propuesta = await Propuesta.findOne(query);
+    if (!propuesta) return res.status(404).json({ error: 'Propuesta no encontrada' });
+
+    // Campos permitidos a actualizar
+    const allowed = ['titulo', 'descripcion', 'comuna', 'categoria', 'tipo', 'imagen', 'ubicacion'];
+    allowed.forEach(field => {
+      if (req.body[field] !== undefined) propuesta[field] = req.body[field];
+    });
+
+    propuesta.fechaActualizacion = new Date();
+    await propuesta.save();
+    res.json(propuesta.toObject());
+  } catch (error) {
+    console.error('Error editar propuesta:', error);
+    res.status(500).json({ error: 'Error al editar propuesta' });
+  }
+});
+
+// Archivar / Desarchivar propuesta
+app.put('/api/propuestas/:id/archive', async (req, res) => {
+  try {
+    const q = req.params.id;
+    const query = { id: q };
+    if (isValidObjectId(q)) {
+      query.$or = [{ _id: q }];
+    }
+    const propuesta = await Propuesta.findOne(query);
+    if (!propuesta) return res.status(404).json({ error: 'Propuesta no encontrada' });
+
+    if (typeof req.body.archivado === 'boolean') {
+      propuesta.archivado = req.body.archivado;
+    } else {
+      return res.status(400).json({ error: 'Campo archivado inválido' });
+    }
+
+    propuesta.fechaActualizacion = new Date();
+    await propuesta.save();
+    res.json(propuesta.toObject());
+  } catch (error) {
+    console.error('Error archivar propuesta:', error);
+    res.status(500).json({ error: 'Error al archivar propuesta' });
   }
 });
 
