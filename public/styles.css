@@ -614,6 +614,86 @@ body {
     transform: scale(1.05);
 }
 
+/* Edit / Archive buttons for leader cards */
+.leader-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+    flex-wrap: wrap; /* wrap on small screens */
+}
+
+.leader-actions .btn-edit,
+.leader-actions .btn-archive {
+    flex: 0 0 auto; /* do not stretch like status buttons */
+    padding: 8px 10px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(16,24,40,0.04);
+    transition: all 0.18s ease-in-out;
+}
+
+.leader-actions .btn-edit:hover {
+    background: #f8fafc;
+    transform: translateY(-3px);
+}
+
+.leader-actions .btn-archive {
+    border-color: #d1d5db;
+}
+
+.leader-actions .btn-archive:hover {
+    background: #f3f4f6;
+    transform: translateY(-3px);
+}
+
+/* When an item is archived, make archive button more prominent (applies when text contains "Desarchivar") */
+.leader-actions .btn-archive.archived {
+    background: #f3f4f6;
+    border-color: #cbd5e1;
+}
+
+/* Toggle button for showing archived items in leader panel */
+#btn-toggle-archivadas {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(245,158,11,0.18);
+    cursor: pointer;
+    transition: transform 0.18s, opacity 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#btn-toggle-archivadas:hover {
+    transform: translateY(-3px);
+    opacity: 0.95;
+}
+
+/* Make sure leader action buttons look good on very small screens */
+@media (max-width: 520px) {
+    .leader-actions .btn-status {
+        flex: 1 1 100%;
+    }
+
+    .leader-actions .btn-edit,
+    .leader-actions .btn-archive {
+        flex: 1 1 48%;
+    }
+}
+
 /* Modal */
 .modal {
     display: none;

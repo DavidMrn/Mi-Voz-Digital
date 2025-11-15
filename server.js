@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 const conectarDB = require('./db');
 const bcrypt = require('bcrypt');
 
-// Models     
+// Models
 const User = require('./models/User');
 const Reporte = require('./models/Reporte');
 const Propuesta = require('./models/Propuesta');
@@ -79,27 +79,20 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/reportes', async (req, res) => {
   try {
-    // Por defecto no retornar items archivados a usuarios normales
-    const includeArchived = req.query.includeArchived === 'true';
-    const baseQuery = {};
-    if (!includeArchived) baseQuery.archivado = { $ne: true };
-    const reportes = await Reporte.find(baseQuery).lean();
+    const reportes = await Reporte.find({}).lean();
     res.json(reportes.map(r => (r.id ? r : { ...r, id: r._id.toString() })));
   } catch (error) {
     console.error('Error obtener reportes:', error);
     res.status(500).json({ error: 'Error al obtener reportes' });
   }
 });
-1
+
 app.get('/api/reportes/:id', async (req, res) => {
   try {
     const q = req.params.id;
     // Construir query evitando problemas con ObjectId casting
-    const includeArchived = req.query.includeArchived === 'true';
     const query = { id: q };
-    if (!includeArchived) query.archivado = { $ne: true };
     if (isValidObjectId(q)) {
-      // usar $or pero respetando archivado
       query.$or = [{ _id: q }];
     }
     const reporte = await Reporte.findOne(query).lean();
@@ -108,47 +101,6 @@ app.get('/api/reportes/:id', async (req, res) => {
   } catch (error) {
     console.error('Error obtener reporte:', error);
     res.status(500).json({ error: 'Error al obtener reporte' });
-  }
-});
-
-// Editar reporte (solo admin expected)
-app.put('/api/reportes/:id', async (req, res) => {
-  try {
-    const q = req.params.id;
-    const query = { id: q };
-    if (isValidObjectId(q)) query.$or = [{ _id: q }];
-    const reporte = await Reporte.findOne(query);
-    if (!reporte) return res.status(404).json({ error: 'Reporte no encontrado' });
-
-    // Permitir actualizar campos seleccionados
-    const allowed = ['titulo', 'descripcion', 'comuna', 'categoria', 'tipo', 'imagen', 'ubicacion'];
-    for (const key of allowed) {
-      if (key in req.body) reporte[key] = req.body[key];
-    }
-
-    await reporte.save();
-    res.json(reporte.toObject());
-  } catch (error) {
-    console.error('Error editar reporte:', error);
-    res.status(500).json({ error: 'Error al editar reporte' });
-  }
-});
-
-// Archivar / desarchivar reporte (solo admin expected)
-app.put('/api/reportes/:id/archive', async (req, res) => {
-  try {
-    const q = req.params.id;
-    const archived = !!req.body.archivado;
-    const query = { id: q };
-    if (isValidObjectId(q)) query.$or = [{ _id: q }];
-    const reporte = await Reporte.findOne(query);
-    if (!reporte) return res.status(404).json({ error: 'Reporte no encontrado' });
-    reporte.archivado = archived;
-    await reporte.save();
-    res.json(reporte.toObject());
-  } catch (error) {
-    console.error('Error archivar reporte:', error);
-    res.status(500).json({ error: 'Error al archivar reporte' });
   }
 });
 
@@ -221,10 +173,7 @@ app.put('/api/reportes/:id/estado', async (req, res) => {
 
 app.get('/api/propuestas', async (req, res) => {
   try {
-    const includeArchived = req.query.includeArchived === 'true';
-    const baseQuery = {};
-    if (!includeArchived) baseQuery.archivado = { $ne: true };
-    const propuestas = await Propuesta.find(baseQuery).lean();
+    const propuestas = await Propuesta.find({}).lean();
     res.json(propuestas.map(p => (p.id ? p : { ...p, id: p._id.toString() })));
   } catch (error) {
     console.error('Error obtener propuestas:', error);
@@ -236,9 +185,7 @@ app.get('/api/propuestas/:id', async (req, res) => {
   try {
     const q = req.params.id;
     // Construir query evitando problemas con ObjectId casting
-    const includeArchived = req.query.includeArchived === 'true';
     const query = { id: q };
-    if (!includeArchived) query.archivado = { $ne: true };
     if (isValidObjectId(q)) {
       query.$or = [{ _id: q }];
     }
@@ -248,46 +195,6 @@ app.get('/api/propuestas/:id', async (req, res) => {
   } catch (error) {
     console.error('Error obtener propuesta:', error);
     res.status(500).json({ error: 'Error al obtener propuesta' });
-  }
-});
-
-// Editar propuesta (solo admin expected)
-app.put('/api/propuestas/:id', async (req, res) => {
-  try {
-    const q = req.params.id;
-    const query = { id: q };
-    if (isValidObjectId(q)) query.$or = [{ _id: q }];
-    const propuesta = await Propuesta.findOne(query);
-    if (!propuesta) return res.status(404).json({ error: 'Propuesta no encontrada' });
-
-    const allowed = ['titulo', 'descripcion', 'comuna', 'categoria', 'tipo', 'imagen', 'ubicacion'];
-    for (const key of allowed) {
-      if (key in req.body) propuesta[key] = req.body[key];
-    }
-
-    await propuesta.save();
-    res.json(propuesta.toObject());
-  } catch (error) {
-    console.error('Error editar propuesta:', error);
-    res.status(500).json({ error: 'Error al editar propuesta' });
-  }
-});
-
-// Archivar / desarchivar propuesta (solo admin expected)
-app.put('/api/propuestas/:id/archive', async (req, res) => {
-  try {
-    const q = req.params.id;
-    const archived = !!req.body.archivado;
-    const query = { id: q };
-    if (isValidObjectId(q)) query.$or = [{ _id: q }];
-    const propuesta = await Propuesta.findOne(query);
-    if (!propuesta) return res.status(404).json({ error: 'Propuesta no encontrada' });
-    propuesta.archivado = archived;
-    await propuesta.save();
-    res.json(propuesta.toObject());
-  } catch (error) {
-    console.error('Error archivar propuesta:', error);
-    res.status(500).json({ error: 'Error al archivar propuesta' });
   }
 });
 
