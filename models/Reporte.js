@@ -11,6 +11,7 @@ const ReporteSchema = new mongoose.Schema({
   fechaActualizacion: Date,
   votos: { type: Number, default: 0 },
   estado: { type: String, default: 'pendiente' },
+  archivado: { type: Boolean, default: false },
   autor: String,
   autorUsuario: String,
   imagen: String,

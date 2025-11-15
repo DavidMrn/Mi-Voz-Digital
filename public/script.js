@@ -15,6 +15,8 @@ let leaderFilters = {
     tipo: '',
     estado: ''
 };
+// Mostrar archivadas en panel de líder
+let leaderShowArchived = false;
 
 // Datos de usuarios almacenados localmente
 let usuariosCiudadanos = JSON.parse(localStorage.getItem('usuariosCiudadanos') || '[]');
@@ -417,16 +419,31 @@ async function loadPanel() {
 // Cargar Panel de Líder
 async function loadLeaderPanel() {
     try {
+        const includeArchived = leaderShowArchived ? '?includeArchived=true' : '';
         const [reportesRes, propuestasRes] = await Promise.all([
-            fetch(`${API_URL}/reportes`),
-            fetch(`${API_URL}/propuestas`)
+            fetch(`${API_URL}/reportes${includeArchived}`),
+            fetch(`${API_URL}/propuestas${includeArchived}`)
         ]);
         
         const reportes = await reportesRes.json();
         const propuestas = await propuestasRes.json();
         
         const allItems = [...reportes, ...propuestas];
-        
+        // Crear/actualizar botón para mostrar archivadas en panel de líder
+        const leaderContainer = document.querySelector('#lider-dashboard .container');
+        if (leaderContainer) {
+            let btn = document.getElementById('btn-toggle-archivadas');
+            if (!btn) {
+                btn = document.createElement('button');
+                btn.id = 'btn-toggle-archivadas';
+                btn.className = 'btn-secondary';
+                btn.style.marginBottom = '10px';
+                btn.addEventListener('click', toggleShowArchived);
+                leaderContainer.prepend(btn);
+            }
+            btn.textContent = leaderShowArchived ? 'Ocultar archivadas' : 'Mostrar archivadas';
+        }
+
         // Actualizar estadísticas (sin filtros)
         document.getElementById('stat-reportes').textContent = reportes.length;
         document.getElementById('stat-propuestas').textContent = propuestas.length;
@@ -443,6 +460,13 @@ async function loadLeaderPanel() {
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+// Toggle para mostrar u ocultar archivadas en panel de líder
+function toggleShowArchived() {
+    leaderShowArchived = !leaderShowArchived;
+    alert(leaderShowArchived ? 'Mostrando items archivados' : 'Ocultando items archivados');
+    loadLeaderPanel();
 }
 
 // Mostrar items
@@ -489,6 +513,8 @@ function displayItems(items, containerId, isLeader = false) {
                         <button class="btn-status pendiente" onclick="changeStatus('${item.id}', '${item.tipo}', 'pendiente')">⏳ Pendiente</button>
                         <button class="btn-status en-proceso" onclick="changeStatus('${item.id}', '${item.tipo}', 'en-proceso')">🔄 En Proceso</button>
                         <button class="btn-status resuelto" onclick="changeStatus('${item.id}', '${item.tipo}', 'resuelto')">✅ Resuelto</button>
+                        <button class="btn-edit" onclick="editItem('${item.id}', '${item.tipo}')">✏️ Editar</button>
+                        <button class="btn-archive" onclick="archiveItem('${item.id}', '${item.tipo}', ${item.archivado ? 'false' : 'true'})">${item.archivado ? '📦 Desarchivar' : '🗄️ Archivar'}</button>
                     </div>
                 ` : `
                     <div class="item-actions">
@@ -559,6 +585,66 @@ async function changeStatus(id, tipo, nuevoEstado) {
     } catch (error) {
         console.error('Error:', error);
         alert('Error al cambiar el estado');
+    }
+}
+
+// Editar item (solo líder)
+async function editItem(id, tipo) {
+    try {
+        const titulo = prompt('Nuevo título (deja vacío para no cambiar):');
+        const descripcion = prompt('Nueva descripción (deja vacío para no cambiar):');
+        const nuevoTipo = prompt('Tipo (reporte/propuesta) - deja vacío para no cambiar:');
+
+        const body = {};
+        if (titulo) body.titulo = titulo;
+        if (descripcion) body.descripcion = descripcion;
+        if (nuevoTipo && (nuevoTipo === 'reporte' || nuevoTipo === 'propuesta')) body.tipo = nuevoTipo;
+
+        if (Object.keys(body).length === 0) {
+            alert('No se modificó nada');
+            return;
+        }
+
+        const endpoint = tipo === 'reporte' ? 'reportes' : 'propuestas';
+        const response = await fetch(`${API_URL}/${endpoint}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+            alert('✅ Item actualizado');
+            loadLeaderPanel();
+        } else {
+            const data = await response.json();
+            alert('Error: ' + (data.error || 'No se pudo actualizar'));
+        }
+    } catch (error) {
+        console.error('Error editar item:', error);
+        alert('Error al editar el item');
+    }
+}
+
+// Archivar / Desarchivar item (solo líder)
+async function archiveItem(id, tipo, archived) {
+    try {
+        const endpoint = tipo === 'reporte' ? 'reportes' : 'propuestas';
+        const response = await fetch(`${API_URL}/${endpoint}/${id}/archive`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ archivado: archived })
+        });
+
+        if (response.ok) {
+            alert(archived ? '✅ Item archivado' : '✅ Item desarchivado');
+            loadLeaderPanel();
+        } else {
+            const data = await response.json();
+            alert('Error: ' + (data.error || 'No se pudo archivar'));
+        }
+    } catch (error) {
+        console.error('Error archivar item:', error);
+        alert('Error al archivar el item');
     }
 }
 
