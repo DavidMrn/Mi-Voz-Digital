@@ -215,23 +215,6 @@ module.exports = mongoose.model('Reporte', ReporteSchema);
 
 
 
-
----
-
-
-
-
-Eso es todo por hoy. 
-Para aquel que lea esto y/o evalúe (Si es que se lee):
-
-No tenía muchas ganas de realizar este proyecto o reto; pero el ver como se conectaba MongoDB y Render; como podía enviar información desde el celular y se actualizaba en mi Laptop, simplemente me enamoró. Aunque la IA estuvo todo el tiempo conmigo en cada error, es algo que definitivamente tengo que aprender en profundidad.
-
-Gracias.
-
-
-— David.
-
-
 ---
 
 
